@@ -17,7 +17,7 @@ def qualifiesPart2(toCheck)
         end
     end
 
-    return hasDouble
+    return hasDouble || groupCount == 1
 end
 
 def qualifies(toCheck)
@@ -36,7 +36,7 @@ def qualifies(toCheck)
 end
 
 def Day4()
-    puts qualifiesPart2(123444)
+    puts qualifiesPart2(111144)
     part1Count = 0
     part2Count = 0
     for test in 256310..732737 do
