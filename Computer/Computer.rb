@@ -1,9 +1,11 @@
 class Computer
-    def initialize(code, input)
+    def initialize(code, phase, input)
         @code = code.clone
         @initialCode = code.clone
         @currentInstruction = 0
-        @input = input || 1
+        @input = phase
+        @secondInput = input
+        @switched = false
     end
 
     def getValue(index, mode)
@@ -14,16 +16,25 @@ class Computer
         end
     end
 
+    def getOutput
+        return @output
+    end
+
     def save
         storeIndex = @code[@currentInstruction + 1]
         input = @input
+        if !@switched
+            @input = @secondInput
+            @switched = true
+        end
         @code[storeIndex] = input
         @currentInstruction = @currentInstruction + 2
     end
 
     def output(firstMode)
         parameter = getValue(@currentInstruction + 1, firstMode)
-        puts "Output: #{parameter}"
+        #puts "Output: #{parameter}"
+        @output = parameter
         @currentInstruction = @currentInstruction + 2;
     end
 
@@ -113,12 +124,35 @@ class Computer
         end
     end
 
+    def runUntilOutput(input)
+        @isDone = false
+        @secondInput = input
+        if @switched
+            @input = input
+        end
+        currentInstruction = @code[@currentInstruction]
+        while currentInstruction != 99
+            parseIntruction(currentInstruction)
+            if currentInstruction == 4 || currentInstruction.to_s[-1] == "4"
+                return
+            end
+            currentInstruction = @code[@currentInstruction]
+        end
+        @isDone = true
+    end
+
+    def done?
+        return @isDone
+    end
+
     def run
+        @isDone = false
         currentInstruction = @code[@currentInstruction]
         while currentInstruction != 99
             parseIntruction(currentInstruction)
             currentInstruction = @code[@currentInstruction]
         end
+        @isDone = true
     end
 
     def result
