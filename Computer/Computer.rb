@@ -6,22 +6,39 @@ class Computer
         @input = phase
         @secondInput = input
         @switched = false
+        @relativeOffset = 0
     end
 
     def getValue(index, mode)
         if mode == 1
-            return @code[index]
-        else
-            return @code[@code[index]]
+            return @code[index] || 0
+        elsif mode == 2
+            return @code[@code[index] + @relativeOffset]
         end
+        return @code[@code[index] || 0] || 0
+    end
+
+    def getIndex(index, mode)
+        if mode == 1
+            return index
+        elsif mode == 2
+            return @code[index] + @relativeOffset
+        end
+        return @code[index] || 0
     end
 
     def getOutput
         return @output
     end
 
-    def save
-        storeIndex = @code[@currentInstruction + 1]
+    def modifyOffset(firstMode)
+        offset = getValue(@currentInstruction + 1, firstMode)
+        @relativeOffset = @relativeOffset + offset
+        @currentInstruction = @currentInstruction + 2
+    end
+
+    def save(firstMode)
+        storeIndex = getIndex(@currentInstruction + 1, firstMode)
         input = @input
         if !@switched
             @input = @secondInput
@@ -33,7 +50,7 @@ class Computer
 
     def output(firstMode)
         parameter = getValue(@currentInstruction + 1, firstMode)
-        #puts "Output: #{parameter}"
+        puts "Output: #{parameter}"
         @output = parameter
         @currentInstruction = @currentInstruction + 2;
     end
@@ -58,19 +75,19 @@ class Computer
         end
     end
 
-    def lessThan(firstMode, secondMode)
+    def lessThan(firstMode, secondMode, thirdMode)
         first = getValue(@currentInstruction + 1, firstMode)
         second = getValue(@currentInstruction + 2, secondMode)
-        storeIndex =  @code[@currentInstruction + 3]
+        storeIndex =  getIndex(@currentInstruction + 3, thirdMode)
         toStore = first < second ? 1 : 0
         @code[storeIndex] = toStore
         @currentInstruction = @currentInstruction + 4
     end
 
-    def equals(firstMode, secondMode)
+    def equals(firstMode, secondMode, thirdMode)
         first = getValue(@currentInstruction + 1, firstMode)
         second = getValue(@currentInstruction + 2, secondMode)
-        storeIndex =  @code[@currentInstruction + 3]
+        storeIndex =  getIndex(@currentInstruction + 3, thirdMode)
         toStore = first == second ? 1 : 0
         @code[storeIndex] = toStore
         @currentInstruction = @currentInstruction + 4
@@ -79,7 +96,7 @@ class Computer
     def add(firstMode, secondMode, thirdMode)
         first = getValue(@currentInstruction + 1, firstMode)
         second = getValue(@currentInstruction + 2, secondMode)
-        storeIndex =  @code[@currentInstruction + 3]
+        storeIndex =  getIndex(@currentInstruction + 3, thirdMode)
         @code[storeIndex] = first + second
         @currentInstruction = @currentInstruction + 4
     end
@@ -87,7 +104,7 @@ class Computer
     def multiply(firstMode, secondMode, thirdMode)
         first = getValue(@currentInstruction + 1, firstMode)
         second = getValue(@currentInstruction + 2, secondMode)
-        storeIndex =  @code[@currentInstruction + 3]
+        storeIndex =  getIndex(@currentInstruction + 3, thirdMode)
         @code[storeIndex] = first * second
         @currentInstruction = @currentInstruction + 4
     end
@@ -110,7 +127,7 @@ class Computer
         elsif opCode == "2"
             multiply(firstMode, secondMode, thirdMode)
         elsif opCode == "3"
-            save
+            save(firstMode)
         elsif opCode == "4"
             output(firstMode)
         elsif opCode == "5"
@@ -118,9 +135,11 @@ class Computer
         elsif opCode == "6"
             jumpIfFalse(firstMode, secondMode)
         elsif opCode == "7"
-            lessThan(firstMode, secondMode)
+            lessThan(firstMode, secondMode, thirdMode)
         elsif opCode == "8"
-            equals(firstMode, secondMode)
+            equals(firstMode, secondMode, thirdMode)
+        elsif opCode == "9"
+            modifyOffset(firstMode)
         end
     end
 
