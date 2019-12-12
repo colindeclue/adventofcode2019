@@ -1,2 +1,2 @@
-require_relative 'Day7/Day7.rb'
-Day7Part2()
+require_relative 'Day8/Day8.rb'
+Day8()
