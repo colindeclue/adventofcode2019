@@ -50,7 +50,7 @@ class Computer
 
     def output(firstMode)
         parameter = getValue(@currentInstruction + 1, firstMode)
-        puts "Output: #{parameter}"
+        #puts "Output: #{parameter}"
         @output = parameter
         @currentInstruction = @currentInstruction + 2;
     end
