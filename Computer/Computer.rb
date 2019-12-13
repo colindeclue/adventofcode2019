@@ -1,5 +1,5 @@
 class Computer
-    def initialize(code, phase, input)
+    def initialize(code, phase, input, userInput)
         @code = code.clone
         @initialCode = code.clone
         @currentInstruction = 0
@@ -7,6 +7,7 @@ class Computer
         @secondInput = input
         @switched = false
         @relativeOffset = 0
+        @userInput = userInput
     end
 
     def getValue(index, mode)
@@ -43,6 +44,10 @@ class Computer
         if !@switched
             @input = @secondInput
             @switched = true
+        end
+        if @userInput
+            puts "input: "
+            input = gets.chomp.to_i
         end
         @code[storeIndex] = input
         @currentInstruction = @currentInstruction + 2

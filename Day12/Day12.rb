@@ -78,12 +78,12 @@ def applyVelocity(moons)
 end
 
 def Day12
-    moons = [Moon.new(0,-1,0,2),Moon.new(1,2,-10,-7),Moon.new(2,4,-8,8),Moon.new(3,3,5,-1)]
+    moons = [Moon.new(0,-7,-1,6),Moon.new(1,6,-9,-9),Moon.new(2,-12,2,-7),Moon.new(3,4,-17,-12)]
     initialX = moons.map{|moon|[moon.x,moon.xv]}
     initialY = moons.map{|moon|[moon.y,moon.yv]}
     initialZ = moons.map{|moon|[moon.z,moon.zv]}
     foundY = false
-    for t in 0..99
+    for t in 0..9999999
         applyGravity(moons)
         applyVelocity(moons)
         newX = moons.map{|moon|[moon.x,moon.xv]}
