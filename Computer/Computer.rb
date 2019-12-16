@@ -55,7 +55,6 @@ class Computer
 
     def output(firstMode)
         parameter = getValue(@currentInstruction + 1, firstMode)
-        #puts "Output: #{parameter}"
         @output = parameter
         @currentInstruction = @currentInstruction + 2;
     end
@@ -148,10 +147,10 @@ class Computer
         end
     end
 
-    def runUntilOutput(input)
+    def runUntilOutput(input, force)
         @isDone = false
         @secondInput = input
-        if @switched
+        if @switched || force
             @input = input
         end
         currentInstruction = @code[@currentInstruction]
