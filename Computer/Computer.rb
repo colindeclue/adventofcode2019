@@ -1,13 +1,11 @@
 class Computer
-    def initialize(code, phase, input, userInput)
+    def initialize(code, inputArray)
         @code = code.clone
         @initialCode = code.clone
         @currentInstruction = 0
-        @input = phase
-        @secondInput = input
-        @switched = false
+        @inputArray = inputArray
+        @inputIndex = 0
         @relativeOffset = 0
-        @userInput = userInput
     end
 
     def getValue(index, mode)
@@ -40,15 +38,8 @@ class Computer
 
     def save(firstMode)
         storeIndex = getIndex(@currentInstruction + 1, firstMode)
-        input = @input
-        if !@switched
-            @input = @secondInput
-            @switched = true
-        end
-        if @userInput
-            puts "input: "
-            input = gets.chomp.to_i
-        end
+        input = @inputArray[@inputIndex]
+        @inputIndex += 1
         @code[storeIndex] = input
         @currentInstruction = @currentInstruction + 2
     end
@@ -56,6 +47,7 @@ class Computer
     def output(firstMode)
         parameter = getValue(@currentInstruction + 1, firstMode)
         @output = parameter
+        print @output.chr
         @currentInstruction = @currentInstruction + 2;
     end
 
@@ -147,12 +139,10 @@ class Computer
         end
     end
 
-    def runUntilOutput(input, force)
+    def runUntilOutput(input)
         @isDone = false
-        @secondInput = input
-        if @switched || force
-            @input = input
-        end
+        @inputArray[0] = input
+        @inputIndex = 0
         currentInstruction = @code[@currentInstruction]
         while currentInstruction != 99
             parseIntruction(currentInstruction)
